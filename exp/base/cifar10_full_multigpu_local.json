@@ -1,0 +1,21 @@
+{
+  "web_ui" : false,
+  "cluster":
+    {
+    "working_dir" : "./",
+    "train_db_name" : "/home/ssd_data/cifar10_lmdb/cifar10_train_lmdb",
+    "test_db_name" : "/home/ssd_data/cifar10_lmdb/cifar10_test_lmdb",
+    "dependencies_path" : "../../",
+    "facade_name": "caffe_facade",
+    "solver_def_file" : "cifar10_full_solver.prototxt",
+    "model_def_file"  : "cifar10_full_train_test.prototxt",
+    "metainfo_file" : "/home/ssd_data/cifar10_lmdb/mean.binaryproto",
+    "log_prefix" : "log_cifar10_",
+    "gpu_ids": [6, 14, 6, 14]
+    },
+  "training":
+    {
+    "gradient_sync_interval" : 1,
+    "warm_start" : false
+    }
+}

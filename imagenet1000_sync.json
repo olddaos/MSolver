@@ -1,0 +1,23 @@
+{
+  "web_ui" : false,
+  "cluster":
+    {
+    "working_dir" : "/home/dsolver_working_dir",
+    "train_db_name" : "/datasets/imagenet_lmdb/imagenet_train_lmdb",
+    "test_db_name" : "/datasets/imagenet_lmdb/imagenet_val_lmdb", 
+    "dependencies_path" : "/home//dlvr_dsolver2/dsolver_2.0_mpi",
+    "facade_name": "caffe_facade",
+    "solver_def_file" : "alexnet_solver_sync.prototxt",
+    "model_def_file"  : "alexnet_train_val.prototxt",
+    "metainfo_file" : "/datasets/imagenet_lmdb/imagenet_mean.binaryproto",
+    "log_prefix" : "mpi_imagenet1000_",
+    "gpu_ids": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+    "number_nodes" : 2
+    },
+  "training":
+    {
+    "gradient_sync_interval" : 1,
+    "warm_start": false
+    }
+}
+

@@ -1,0 +1,22 @@
+{
+  "web_ui" : false,
+  "cluster":
+    {
+    "working_dir" : "./examples/cifar10_full_multigpu/working_dir",
+    "train_db_name" : "/home/ssd_data/cifar10_lmdb/cifar10_train_lmdb",
+    "test_db_name" : "/home/ssd_data/cifar10_lmdb/cifar10_test_lmdb",
+    "dependencies_path" : "/home/al.miasnikov/dlvr_solver_mesos",
+    "facade_name": "caffe_facade",
+    "solver_def_file" : "/home/al.miasnikov/dlvr_solver_mesos/examples/cifar10_full_multigpu/cifar10_full_solver.prototxt",
+    "model_def_file"  : "/home/al.miasnikov/dlvr_solver_mesos/examples/cifar10_full_multigpu/cifar10_full_train_test.prototxt",
+    "metainfo_file" : "/home/ssd_data/cifar10_lmdb/mean.binaryproto",
+    "log_prefix" : "log_cifar10_",
+    "ipcluster_profile" : "cifar10_full_multigpu_local",
+    "gpu_ids": [1, 2, 3, 4, 5, 6, 7, 8]
+    },
+  "training":
+    {
+    "gradient_sync_interval" : 1,
+    "warm_start" : false
+    }
+}

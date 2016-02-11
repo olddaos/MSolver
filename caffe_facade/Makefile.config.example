@@ -1,0 +1,33 @@
+## Refer to http://caffe.berkeleyvision.org/installation.html
+# Contributions simplifying and improving our build system are welcome!
+
+CAFFE_DIR := ../../../caffe
+
+USE_CUDNN := 1
+# CPU-only switch (uncomment to build without GPU support).
+# CPU_ONLY := 1
+# CUDA directory contains bin/ and lib/ directories that we need.
+CUDA_DIR := /usr/local/cuda
+# Redis DB backend
+WITH_REDIS = 0
+
+# DEBUG := 1
+BLAS := open#atlas
+BLAS_INCLUDE := /opt/OpenBLAS/include
+BLAS_LIB := /opt/OpenBLAS/lib
+
+# NOTE: this is required only if you will compile the python interface.
+# We need to be able to find Python.h and numpy/arrayobject.h.
+PYTHON_INCLUDE := /home/k.gavrilyuk/anaconda/include \
+	/home/k.gavrilyuk/anaconda/include/python2.7 \
+	/home/k.gavrilyuk/anaconda/lib/python2.7/site-packages/numpy/core/include
+
+# We need to be able to find libpythonX.X.so or .dylib.
+PYTHON_LIB := /usr/local/lib
+
+GTEST_DIR := ../../../caffe/src/
+# Whatever else you find you need goes here.
+INCLUDE_DIRS := $(PYTHON_INCLUDE) /home/k.gavrilyuk/CUDNN/cudnn-6.5-linux-R1 /usr/local/include
+LIBRARY_DIRS := $(PYTHON_LIB) /home/k.gavrilyuk/CUDNN/cudnn-6.5-linux-R1 /usr/local/lib /usr/lib $(CAFFE_DIR)/build/lib
+
+BUILD_DIR := build

@@ -1,0 +1,13 @@
+net: "cifar10_full_train_test.prototxt"
+test_iter: 100
+test_interval: 250
+base_lr: 0.004
+momentum: 0.9
+weight_decay: 0.004
+power: 0.5
+lr_policy: "poly"
+display: 50
+max_iter: 17500
+snapshot: 2500
+snapshot_prefix: "cifar10_full"
+solver_mode: GPU

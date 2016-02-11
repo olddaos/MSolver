@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unit Test Report</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+<style>
+body {
+    font-family: Calibri, "Trebuchet MS", sans-serif;
+}
+* {
+    word-break: break-all;
+}
+table, td, th, .dataid {
+    border: 1px solid #aaa;
+    border-collapse: collapse;
+    background: #fff;
+}
+section {
+    background: rgba(0, 0, 0, 0.05);
+    margin: 2ex;
+    padding: 1ex;
+    border: 1px solid #999;
+    border-radius: 5px;
+}
+h1 {
+    font-size: 130%;
+}
+h2 {
+    font-size: 120%;
+}
+h3 {
+    font-size: 100%;
+}
+h4 {
+    font-size: 85%;
+}
+h1, h2, h3, h4, a[href] {
+    cursor: pointer;
+    color: #0074d9;
+    text-decoration: none;
+}
+h3 strong, a.failed {
+    color: #ff4136;
+}
+a.success {
+    color: #3d9970;
+}
+pre {
+    font-family: 'Consolas', 'Deja Vu Sans Mono',
+                 'Bitstream Vera Sans Mono', 'Monaco',
+                 'Courier New', monospace;
+}
+
+.test-details,
+.traceback {
+    display: none;
+}
+section:target .test-details {
+    display: block;
+}
+
+</style>
+</head>
+<body>
+    <h1>Overview</h1>
+    <section>
+        <table>
+            <tr>
+                <th>Class</th>
+                <th>Fail</th>
+                <th>Skip</th>
+                <th>Success</th>
+                <th>Total</th>
+            </tr>
+                <tr>
+                    <td>test_NesterovSolver.TestNesterovSolverCPU</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>17</td>
+                    <td>17</td>
+                </tr>
+                <tr>
+                    <td>test_models.TestModels</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>test_net.TestNet</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>11</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <td>test_NesterovSolver.TestNesterovSolverGPU</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>8</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>test_blob.TestBlob</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>11</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <td>test_pycuda.TestPyCuda</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>test_SGDSolver.TestSGDSolverCPU</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>17</td>
+                    <td>17</td>
+                </tr>
+                <tr>
+                    <td>test_AdaGradSolver.TestAdaGradSolverCPU</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>17</td>
+                    <td>17</td>
+                </tr>
+                <tr>
+                    <td>test_net_pycuda.TestNetPyCuda</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>test_AdaGradSolver.TestAdaGradSolverGPU</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>8</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>test_SGDSolver.TestSGDSolverGPU</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>8</td>
+                    <td>8</td>
+                </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td>0</td>
+                <td>0</td>
+                <td>103</td>
+                <td>109</td>
+            </tr>
+        </table>
+    </section>
+    <h1>Failure details</h1>
+            <section>
+                <h2>test_pycuda.TestPyCuda (0 failures, 2 errors)</h2>
+                <div>
+                        <section id="test_pycuda.TestPyCuda:test_average">
+                            <h3>test_average: <strong>exceptions.ImportError</strong></h3>
+                            <div class="test-details">
+                                <h4>Traceback</h4>
+                                <pre class="traceback">Traceback (most recent call last):
+  File "/usr/lib/python2.7/unittest/case.py", line 331, in run
+    testMethod()
+  File "/mount_data/dlvr_dsolver/facades/caffe_facade/tests/test_unittests/test_pycuda.py", line 34, in test_average
+    import scikits.cuda.cublas as cublas
+ImportError: No module named scikits.cuda.cublas
+</pre>
+                                <h4>Details</h4>
+                                <pre>No module named scikits.cuda.cublas</pre>
+                            </div>
+                        </section>
+                        <section id="test_pycuda.TestPyCuda:test_axpy">
+                            <h3>test_axpy: <strong>exceptions.ImportError</strong></h3>
+                            <div class="test-details">
+                                <h4>Traceback</h4>
+                                <pre class="traceback">Traceback (most recent call last):
+  File "/usr/lib/python2.7/unittest/case.py", line 331, in run
+    testMethod()
+  File "/mount_data/dlvr_dsolver/facades/caffe_facade/tests/test_unittests/test_pycuda.py", line 12, in test_axpy
+    import scikits.cuda.cublas as cublas
+ImportError: No module named scikits.cuda.cublas
+</pre>
+                                <h4>Details</h4>
+                                <pre>No module named scikits.cuda.cublas</pre>
+                            </div>
+                        </section>
+                </div>
+            </section>
+            <section>
+                <h2>test_net_pycuda.TestNetPyCuda (0 failures, 4 errors)</h2>
+                <div>
+                        <section id="test_net_pycuda.TestNetPyCuda:test_blob_data_to_gpuarray">
+                            <h3>test_blob_data_to_gpuarray: <strong>exceptions.AttributeError</strong></h3>
+                            <div class="test-details">
+                                <h4>Traceback</h4>
+                                <pre class="traceback">Traceback (most recent call last):
+  File "/usr/lib/python2.7/unittest/case.py", line 331, in run
+    testMethod()
+  File "/mount_data/dlvr_dsolver/facades/caffe_facade/tests/test_unittests/test_net_pycuda.py", line 146, in test_blob_data_to_gpuarray
+    with pycuda_util.caffe_cuda_context():
+AttributeError: 'module' object has no attribute 'caffe_cuda_context'
+</pre>
+                                <h4>Details</h4>
+                                <pre>'module' object has no attribute 'caffe_cuda_context'</pre>
+                            </div>
+                        </section>
+                        <section id="test_net_pycuda.TestNetPyCuda:test_blob_diff_to_gpuarray">
+                            <h3>test_blob_diff_to_gpuarray: <strong>exceptions.AttributeError</strong></h3>
+                            <div class="test-details">
+                                <h4>Traceback</h4>
+                                <pre class="traceback">Traceback (most recent call last):
+  File "/usr/lib/python2.7/unittest/case.py", line 331, in run
+    testMethod()
+  File "/mount_data/dlvr_dsolver/facades/caffe_facade/tests/test_unittests/test_net_pycuda.py", line 157, in test_blob_diff_to_gpuarray
+    with pycuda_util.caffe_cuda_context():
+AttributeError: 'module' object has no attribute 'caffe_cuda_context'
+</pre>
+                                <h4>Details</h4>
+                                <pre>'module' object has no attribute 'caffe_cuda_context'</pre>
+                            </div>
+                        </section>
+                        <section id="test_net_pycuda.TestNetPyCuda:test_update_data">
+                            <h3>test_update_data: <strong>exceptions.ImportError</strong></h3>
+                            <div class="test-details">
+                                <h4>Traceback</h4>
+                                <pre class="traceback">Traceback (most recent call last):
+  File "/usr/lib/python2.7/unittest/case.py", line 331, in run
+    testMethod()
+  File "/mount_data/dlvr_dsolver/facades/caffe_facade/tests/test_unittests/test_net_pycuda.py", line 167, in test_update_data
+    import scikits.cuda.cublas as cublas
+ImportError: No module named scikits.cuda.cublas
+</pre>
+                                <h4>Details</h4>
+                                <pre>No module named scikits.cuda.cublas</pre>
+                            </div>
+                        </section>
+                        <section id="test_net_pycuda.TestNetPyCuda:test_update_diff">
+                            <h3>test_update_diff: <strong>exceptions.ImportError</strong></h3>
+                            <div class="test-details">
+                                <h4>Traceback</h4>
+                                <pre class="traceback">Traceback (most recent call last):
+  File "/usr/lib/python2.7/unittest/case.py", line 331, in run
+    testMethod()
+  File "/mount_data/dlvr_dsolver/facades/caffe_facade/tests/test_unittests/test_net_pycuda.py", line 203, in test_update_diff
+    import scikits.cuda.cublas as cublas
+ImportError: No module named scikits.cuda.cublas
+</pre>
+                                <h4>Details</h4>
+                                <pre>No module named scikits.cuda.cublas</pre>
+                            </div>
+                        </section>
+                </div>
+            </section>
+
+    <h1>All tests</h1>
+    <section>
+        <h2>test_NesterovSolver.TestNesterovSolverCPU (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_calculate_train_info</a></li>
+                <li><a class="success">test_clear_history</a></li>
+                <li><a class="success">test_compute_update_value</a></li>
+                <li><a class="success">test_display</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_get_learning_rate</a></li>
+                <li><a class="success">test_iter</a></li>
+                <li><a class="success">test_max_iter</a></li>
+                <li><a class="success">test_output</a></li>
+                <li><a class="success">test_snapshot</a></li>
+                <li><a class="success">test_snapshot_interval</a></li>
+                <li><a class="success">test_solve</a></li>
+                <li><a class="success">test_test</a></li>
+                <li><a class="success">test_test_interval</a></li>
+                <li><a class="success">test_train_info</a></li>
+                <li><a class="success">test_train_loss</a></li>
+                <li><a class="success">test_update</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_models.TestModels (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_alexnet</a></li>
+                <li><a class="success">test_cifar10_full</a></li>
+                <li><a class="success">test_googlenet</a></li>
+                <li><a class="success">test_nin</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_net.TestNet (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_blobs_data</a></li>
+                <li><a class="success">test_blobs_diff</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_inputs_outputs</a></li>
+                <li><a class="success">test_memory</a></li>
+                <li><a class="success">test_params_data_shape</a></li>
+                <li><a class="success">test_params_data_write_read</a></li>
+                <li><a class="success">test_params_diff_shape</a></li>
+                <li><a class="success">test_params_diff_write_read</a></li>
+                <li><a class="success">test_params_items</a></li>
+                <li><a class="success">test_save_and_read</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_NesterovSolver.TestNesterovSolverGPU (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_calculate_train_info</a></li>
+                <li><a class="success">test_clear_history</a></li>
+                <li><a class="success">test_compute_update_value</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_snapshot</a></li>
+                <li><a class="success">test_solve</a></li>
+                <li><a class="success">test_test</a></li>
+                <li><a class="success">test_update</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_blob.TestBlob (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_channels</a></li>
+                <li><a class="success">test_count</a></li>
+                <li><a class="success">test_empty_init</a></li>
+                <li><a class="success">test_height</a></li>
+                <li><a class="success">test_list_init</a></li>
+                <li><a class="success">test_num</a></li>
+                <li><a class="success">test_reshape</a></li>
+                <li><a class="success">test_set_data</a></li>
+                <li><a class="success">test_set_diff</a></li>
+                <li><a class="success">test_tuple_init</a></li>
+                <li><a class="success">test_width</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_pycuda.TestPyCuda (0 failures, 2 errors)</h2>
+        <ul>
+                <li><a class="failed" href="#test_pycuda.TestPyCuda:test_average">test_average</a></li>
+                <li><a class="failed" href="#test_pycuda.TestPyCuda:test_axpy">test_axpy</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_SGDSolver.TestSGDSolverCPU (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_calculate_train_info</a></li>
+                <li><a class="success">test_clear_history</a></li>
+                <li><a class="success">test_compute_update_value</a></li>
+                <li><a class="success">test_display</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_get_learning_rate</a></li>
+                <li><a class="success">test_iter</a></li>
+                <li><a class="success">test_max_iter</a></li>
+                <li><a class="success">test_output</a></li>
+                <li><a class="success">test_snapshot</a></li>
+                <li><a class="success">test_snapshot_interval</a></li>
+                <li><a class="success">test_solve</a></li>
+                <li><a class="success">test_test</a></li>
+                <li><a class="success">test_test_interval</a></li>
+                <li><a class="success">test_train_info</a></li>
+                <li><a class="success">test_train_loss</a></li>
+                <li><a class="success">test_update</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_AdaGradSolver.TestAdaGradSolverCPU (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_calculate_train_info</a></li>
+                <li><a class="success">test_clear_history</a></li>
+                <li><a class="success">test_compute_update_value</a></li>
+                <li><a class="success">test_display</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_get_learning_rate</a></li>
+                <li><a class="success">test_iter</a></li>
+                <li><a class="success">test_max_iter</a></li>
+                <li><a class="success">test_output</a></li>
+                <li><a class="success">test_snapshot</a></li>
+                <li><a class="success">test_snapshot_interval</a></li>
+                <li><a class="success">test_solve</a></li>
+                <li><a class="success">test_test</a></li>
+                <li><a class="success">test_test_interval</a></li>
+                <li><a class="success">test_train_info</a></li>
+                <li><a class="success">test_train_loss</a></li>
+                <li><a class="success">test_update</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_net_pycuda.TestNetPyCuda (0 failures, 4 errors)</h2>
+        <ul>
+                <li><a class="failed" href="#test_net_pycuda.TestNetPyCuda:test_blob_data_to_gpuarray">test_blob_data_to_gpuarray</a></li>
+                <li><a class="failed" href="#test_net_pycuda.TestNetPyCuda:test_blob_diff_to_gpuarray">test_blob_diff_to_gpuarray</a></li>
+                <li><a class="success">test_blobs_data</a></li>
+                <li><a class="success">test_blobs_diff</a></li>
+                <li><a class="failed" href="#test_net_pycuda.TestNetPyCuda:test_update_data">test_update_data</a></li>
+                <li><a class="failed" href="#test_net_pycuda.TestNetPyCuda:test_update_diff">test_update_diff</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_AdaGradSolver.TestAdaGradSolverGPU (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_calculate_train_info</a></li>
+                <li><a class="success">test_clear_history</a></li>
+                <li><a class="success">test_compute_update_value</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_snapshot</a></li>
+                <li><a class="success">test_solve</a></li>
+                <li><a class="success">test_test</a></li>
+                <li><a class="success">test_update</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>test_SGDSolver.TestSGDSolverGPU (0 failures, 0 errors)</h2>
+        <ul>
+                <li><a class="success">test_calculate_train_info</a></li>
+                <li><a class="success">test_clear_history</a></li>
+                <li><a class="success">test_compute_update_value</a></li>
+                <li><a class="success">test_forward_backward</a></li>
+                <li><a class="success">test_snapshot</a></li>
+                <li><a class="success">test_solve</a></li>
+                <li><a class="success">test_test</a></li>
+                <li><a class="success">test_update</a></li>
+        </ul>
+    </section>
+</body>
+<script>
+    Array.prototype.forEach.call(document.querySelectorAll('h1, h2, h3, h4'), function(el) {
+        el.addEventListener('click', function() {
+            el.nextElementSibling.style.display = document.defaultView.getComputedStyle(el.nextElementSibling).display == 'none' ? 'block' : 'none';
+        })
+    })
+</script>
+</html>

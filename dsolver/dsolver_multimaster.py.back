@@ -1,0 +1,216 @@
+#!/usr/bin/env python
+"""
+Asynchronous and Synchronous Distributed Solvers for training Convolutional Neural Networks based on Caffe library using IPython.
+"""
+
+import time
+import datetime
+from   dsolver_ip_base_mpi import IPSolverBaseMPI
+import pycuda.driver as cuda
+import pycuda.gpuarray as gpuarray
+import scikits.cuda.cublas as cublas
+import numpy as np
+from mpi4py import MPI
+import os
+#from memory_profiler import profile
+#from guppy import hpy
+import gc
+
+class MM_SDSolverMPI(IPSolverBaseMPI):
+        """
+        Synchronous Distributed Solver.
+        """
+        def __init__(self, local_solver_cls, dsolver_config_file):
+           IPSolverBaseMPI.__init__(self, local_solver_cls, dsolver_config_file)
+
+           # FIXME : this scheme works even we try to run unevenly distributed ranks
+#           self.masters     = self._cluster_config.get('master_ranks', [0])
+
+#           self.master_rank = None
+
+#           ranks_list = [ i for i in xrange( self.comm_size ) ][::2]
+#           if ( self.rank in ranks_list ):
+#              self.master_rank = self.rank           # This is the value of current master's rank. TODO: take this from config at EACH machine or invent configless method
+#           self.num_masters = ranks_list.__len__()
+#           self.chunk_size  = self.comm_size / self.num_masters
+
+           self.num_masters = 2
+           self.master_rank = 2
+
+           print "Hi, multimaster solver started!"
+
+	def solve(self):
+
+           self.chunk_size  = (self.comm_size / self.num_masters) 
+	   if self.rank == self.master_rank:	
+               self.logger.info("MM_SDSolverMPI started at submaster #%d..." % self.master_rank)
+	       self.logger.info('Current Datetime = {0}'.format(str(datetime.datetime.now())))
+	   self._solve_start = time.time()
+
+           print "Doing initial output..."
+	   # FIXME FIXME FIXME
+	   iter = 0
+	   max_iter = 17500 #60000 #450000
+
+	   while iter < max_iter:
+              print 'Iter {0:d} from {1:d}...'.format(iter, max_iter) + ' rank %d' % self.rank
+	      if self.rank == self.master_rank:
+		  print 'Iter {0:d} from {1:d}...'.format(iter, max_iter)
+	          self.logger.info('Iter {0:d} from {1:d}...'.format(iter, max_iter))
+
+              print "DL02: Trc: Solve: calling compute_weights_updates"
+	      self.compute_weights_updates( iter )
+              print "DL02: Trc: Solve: rank %d finished compute_weights_updates" % self.rank
+
+	      # Update train loss
+              print "DL02: Trc: Solve: calling reduce_obtained_updates in rank %d" % self.rank
+	      self.reduce_obtained_updates()
+
+              print "DL02: Trc: Solve: FINISHED reduce_obtained_updates in rank %d" % self.rank
+
+	      #One weights update - one iteration
+	      iter += 1
+
+              _ = gc.collect()
+
+	      # Logging and snapshots
+	      if self.rank == self.master_rank:
+		print 'Loss: ' + str(self.local_solver.train_loss)
+	      	self._log_training()
+
+	   # Make a snapshot on master
+	   if self.rank == self.master_rank:
+               print "Snapshotting..."
+               for (data, data_blob_gpu) in zip( self.local_solver.net.params_data, self.data_blobs_gpu): 
+	           cuda.memcpy_dtoh(data, data_blob_gpu.ptr)
+	           self.local_solver.snapshot()
+	           self.local_solver.output_finish()
+
+	def compute_weights_updates( self, current_iteration ):
+	    """
+	    Receives whole network weights in GPU memory using IPC.
+	    Assigns received weights to network of local_solver.
+	    Then runs for gradient_sync_interval iterations ForwardBackward operation for updating local weights.
+	    Locally updated weights is the result of the function.
+
+	    **Args**:
+		current_iteration (int) : current iteration.
+	    """
+	    self.ctx.synchronize()
+	    self.local_solver.iter = current_iteration
+	    for data_blob in self.data_blobs_gpu:
+		if self.rank == self.master_rank:
+		    for i in range( self.master_rank + 1, self.master_rank + self.chunk_size ):   # This ugly thing simply means, that we send blob to the slave nodes, residing at same root complex, where current submaster resides
+                        print "DL02: compute_weights_updates: Broadcasting from master # %d to rank %d" % (self.master_rank, i)
+			self.comm.Send([ self.to_buffer(data_blob) ,MPI.FLOAT], dest=i)
+		else:
+                    print "DL02: compute_weights_updates: Receiving in rank # %d from master rank # %d" % ( self.rank, self.master_rank )
+		    self.comm.Recv([ self.to_buffer(data_blob) ,MPI.FLOAT], source= self.master_rank)
+		#self.comm.Bcast([ self.to_buffer(data_blob) ,MPI.FLOAT], root=0)
+	    self.ctx.synchronize()
+	    if self.rank > self.master_rank:
+		# Run training network for num_iterations
+		compute_time = time.time()
+		for i in range(self._gradient_sync_interval):
+			# TODO TODO FIXME FIXME: forward_backward spawns MEMORY LEAK ( either in Caffe and ( probably ) in facade . People relate this error to DataReaders, which supposed to be root cause 
+			self.local_solver.forward_backward()
+			self.local_solver.compute_update_value()
+			self.local_solver.update()
+
+		self.ctx.synchronize()
+
+		self.local_solver.calculate_train_info();
+		compute_time = time.time() - compute_time
+	    else:
+		self.local_solver.train_loss = 0.0
+
+ #           print "Rank # %d before reduce" % self.rank
+	    dummy = 888 # FIXME TODO this one hangs in multimaster scheme self.comm.reduce( self.local_solver.train_loss, op=MPI.SUM, root=self.master_rank )
+
+#            print "Rank # %d after reduce" % self.rank
+
+	    if self.rank == (self.master_rank + 1):
+
+                print "DL02: compute_weights_updates: in train_info. Before send from rank # %d to %d" % ( self.rank, self.master_rank )
+		self.comm.send( self.local_solver.train_info, dest=self.master_rank )
+
+                print "DL02: compute_weights_updates: Rank # %d  after send" % self.rank
+	    elif self.rank == self.master_rank:
+		self.local_solver.train_loss = dummy
+		self.local_solver.train_loss /= self.comm_size-1
+		self.local_solver.train_info = self.comm.recv(source=(self.master_rank + 1))
+                print "DL02: compute_weights_updates: rank # %d just at the end" % self.rank
+
+	def reduce_obtained_updates( self ):
+            print "DL02: Called reduce_obtained_updates"
+	    if self.rank == self.master_rank:
+		for data_blob in self.data_blobs_gpu:
+	# FIXME	    data_blob.fill(0)
+		    cublas.cublasSscal( self.cublas_handle, data_blob.size, 0, data_blob.gpudata, 1)
+		self.ctx.synchronize()
+	   
+            print "DL02: reduce_obtained_updates: My rank is %d " % self.rank
+	    for i in xrange(len( self.data_blobs_gpu)):
+		if self.rank == self.master_rank:
+                    print "DL02: reduce_obtained_updates: Origin %d : End %d" % ( self.master_rank +1,  self.master_rank + self.chunk_size )
+		    for j in range( self.master_rank +1,  self.master_rank + self.chunk_size):
+                        print "DL02: reduce_obtained_updates: receiving"
+		        self.comm.Recv([ self.to_buffer( self.data_blobs_gpu_initial[i]), MPI.FLOAT], source=MPI.ANY_SOURCE)
+		        cublas.cublasSaxpy(self.cublas_handle, self.data_blobs_gpu_initial[i].size, 1.0, self.data_blobs_gpu_initial[i].gpudata, 1, self.data_blobs_gpu[i].gpudata, 1) 
+
+                        print "DL02: reduce_obtained_updates:  RECEIVED"
+		    #self.comm.Reduce(MPI.IN_PLACE, [ self.to_buffer( self.data_blobs_gpu[i]), MPI.FLOAT], op=MPI.SUM, root=0)
+		else:
+                    print "DL02: reduce_obtained_updates: sending from rank # %d to master %d" % ( self.rank, self.master_rank )
+		    self.comm.Send([ self.to_buffer( self.data_blobs_gpu[i]), MPI.FLOAT], dest=self.master_rank )
+
+                    print "DL02: reduce_obtained_updates: Send from rank # %d to master %d completed" % ( self.rank, self.master_rank )
+		    #self.comm.Reduce([ self.to_buffer( self.data_blobs_gpu[i]), MPI.FLOAT], [ self.to_buffer( self.data_blobs_gpu[i]), MPI.FLOAT], op=MPI.SUM, root=0)
+		self.comm.Barrier()
+	    self.ctx.synchronize()
+	    
+            print "DL02: reduce_obtained_updates: after synchronize"
+	    if self.rank == self.master_rank:
+		for data_blob in self.data_blobs_gpu:
+		    cublas.cublasSscal(self.cublas_handle, data_blob.size, 1.0 / (self.comm_size-1), data_blob.gpudata, 1)
+		self.ctx.synchronize()
+
+            print "DL02: reduce_obtained_updates: Going to synchronize MASTERS in rank %d !" % self.rank
+            # Now we synchronize with all masters 
+            # TODO: implement CORRECT reduce here! What follows is valid only if we have only TWO masters ( to measure speedup only )
+#            if ( self.rank == 0 ):
+#	       for i in xrange(len( self.data_blobs_gpu)):
+#                  self.comm.Sendrecv( [ self.to_buffer( self.data_blobs_gpu[i]), MPI.FLOAT], dest=2, sendtag=0, recvbuf=[ self.to_buffer( self.temp_buffer_tosync[i]), MPI.FLOAT], source=0, recvtag=0 ) 
+
+            print "DL02: reduce_obtained_updates: Again Going to synchronize MASTERS in rank %d !" % self.rank
+            if ( self.rank == 2 ):
+	       for i in xrange(len( self.data_blobs_gpu)):
+                  self.comm.Sendrecv( [ self.to_buffer( self.data_blobs_gpu[i]), MPI.FLOAT], dest=2, sendtag=0, recvbuf=[ self.to_buffer( self.temp_buffer_tosync[i]), MPI.FLOAT],  source=0, recvtag=0 ) 
+
+            print "DL02: reduce_obtained_updates: After all Sendrecvs in rank %d" % self.rank
+            # Now average all received from submasters data
+            cublas.cublasSaxpy(self.cublas_handle, self.temp_buffer_tosync[i].size, 1.0, self.temp_buffer_tosync[i].gpudata, 1, self.data_blobs_gpu[i].gpudata, 1) 
+
+            for data_blob in self.data_blobs_gpu:
+                  cublas.cublasSscal(self.cublas_handle, data_blob.size, 1.0 / (self.chunk_size), data_blob.gpudata, 1)
+
+            self.ctx.synchronize()
+
+            print "DL02: reduce_obtained_updates: at the end. Rank %d" % self.rank
+
+	def initial_output( self ):
+	    # Initial output
+	    if self.rank == self.master_rank:
+		self.local_solver.test()
+		self.local_solver.output_train_loss()
+		self.local_solver.calculate_train_info()
+		self.local_solver.output_train_info()
+		self.local_solver.output_learning_rate()
+
+	def snapshot_sync_cpu( self ):
+	    if self.local_solver.snapshot_interval and\
+	    self.local_solver.iter - iter_old['snapshot'] >= self.local_solver.snapshot_interval:
+		for (data, data_blob_gpu) in zip( self.local_solver.net.params_data, self.data_blobs_gpu):
+		     cuda.memcpy_dtoh(data, data_blob_gpu.ptr)
+
+
