@@ -1,4 +1,3 @@
-===============================
 MultiGPU Convolutional Networks Training Framework
 ===============================
 
